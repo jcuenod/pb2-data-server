@@ -1,9 +1,6 @@
-FROM postgres:11-alpine
+FROM postgres:13-alpine
 
 ENV POSTGRES_DB parabible
-# The order may matter here:
-# is_set_cover_possible needs to have a schema set by search_path_conf
-ADD ["parabible_data.sql.gz", "search_path_conf.sql", "is_set_cover_possible.sql", "/docker-entrypoint-initdb.d/"]
 
 RUN set -eux; \
     \
@@ -69,3 +66,10 @@ RUN set -eux; \
     /usr/local/share/man \
     ; \
     find /usr/local -name '*.a' -delete
+
+# The order doesn't matter, they're executed in a file type/alphabetical order by postgres in the container:
+# is_set_cover_possible needs to have a schema set by search_path_conf
+ADD ["parabible_data.sql.gz", "search_path_conf.sql", "is_set_cover_possible.sql", "/docker-entrypoint-initdb.d/"]
+# Another option for ^^ would be to bind the initdb directory to something in our local filesystem:
+# In the run script, use: -v /your/directory/initdb:/docker-entrypoint-initdb.d \
+# To persist data: -v postgresdata:/var/lib/postgresql/data \

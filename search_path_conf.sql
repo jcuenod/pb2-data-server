@@ -1,2 +1,2 @@
-ALTER ROLE postgres SET search_path TO parabible;
+--- ALTER ROLE postgres SET search_path TO parabible;
 
